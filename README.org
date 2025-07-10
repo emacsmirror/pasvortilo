@@ -1,0 +1,2 @@
+* Pasvortilo: Emacs password management
+This is a password manager for Emacs
