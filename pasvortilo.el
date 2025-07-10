@@ -3,8 +3,8 @@
 ;; Author: Oscar
 ;; Version: 1.0
 ;; Package-Requires:  ((emacs "26.1") (transient "0.3.0"))
-;; Homepage: homepage
-;; Keywords: password_manager
+;; Homepage: https://codeberg.org/mester/pasvortilo
+;; Keywords: unix, extensions, passwords
 
 ;; This file is not part of GNU Emacs
 
@@ -53,8 +53,7 @@
   (pcase action
     ("Copy" (pasvortilo-copy-pass password))
     ("Insert" (pasvortilo-insert-pass password))
-    ("Create" (pasvortilo-create-new-pass password)))
-))
+    ("Create" (pasvortilo-create-new-pass password)))))
 
 (defun pasvortilo-generate-pass (&optional service length symbols?)
   "Generate and store a password using 'pass' or 'gopass' directly.
@@ -101,7 +100,7 @@ Using the optional parameters SERVICE, LENGTH SYMBOLS? is possible to define the
           (shell-command (format "%s rm -f %s" pasvortilo-password-manager serv))
           (message "Password for %s deleted." serv))
       (message "Deletion canceled."))))
-(defun clean-entries (entries)
+(defun pasvortilo-clean-entries (entries)
   "Return a list of ENTRIES for 'pass' or 'gopass' password manager in a format that works in Emacs."
   (let* ((lines (split-string entries "\n" t))
          (path-stack '())
@@ -120,7 +119,7 @@ Using the optional parameters SERVICE, LENGTH SYMBOLS? is possible to define the
 
 (defun pasvortilo-select-service ()
   "Select the service of a password."
-  (let* ((password-entries (clean-entries (ansi-color-filter-apply (shell-command-to-string (format "%s ls" pasvortilo-password-manager)))))
+  (let* ((password-entries (pasvortilo-clean-entries (ansi-color-filter-apply (shell-command-to-string (format "%s ls" pasvortilo-password-manager)))))
 	 (password-entry (string-trim (completing-read "Password entry: " password-entries nil t))))
 	 (when password-entry
 	     password-entry)))
