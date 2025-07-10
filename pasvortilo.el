@@ -1,4 +1,4 @@
-;;; pasvortilo.el --- summary -*- lexical-binding: t -*-
+;;; pasvortilo.el --- Password manager interface for pass/gopass -*- lexical-binding: t -*-
 
 ;; Author: Oscar
 ;; Version: 1.0
@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; Password manager using pass or gopass as backend
+;; Password manager using pass or gopass as backend, allow to create password copy them insert them in a buffer insert a custom password, use transient for a little interface that allow to do operations
 
 ;;; Code:
 
