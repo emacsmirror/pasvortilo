@@ -23,9 +23,12 @@
 
 ;;; Commentary:
 
-;; Password manager using pass as backend
+;; Password manager using pass or gopass as backend
 
 ;;; Code:
+
+(require 'transient)
+
 (defgroup pasvortilo nil
   "Password manager using pass or gopass as backend."
   :group 'applications
@@ -85,7 +88,7 @@
 (transient-define-prefix pasvortilo-menu ()
   "Custom menu to do actions in pasvoritlo."
   [["Actions"
-    ("c" "Copy password" (lambda () (interactive) (pasvortilo-copy-pass (pasvortilo-select-pass))))
+    ("c" "Copy password" (lambda () (interactive) (pasvortilo-actions (pasvortilo-select-pass) "Copy")))
     ("i" "Insert password" (lambda () (interactive) (pasvortilo-insert-pass (pasvortilo-select-pass))))
     
     "Exit"
