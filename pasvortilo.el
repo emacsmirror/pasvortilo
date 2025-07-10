@@ -81,15 +81,11 @@
 	 (when password-entry
 	     (pasvortilo-obtain-password password-entry))))
 
-(defun clean-gopass (pass)
-  "Cleaning of passwords if yoy use gopass, PASS as password."
-  (cdr (string-lines pass)))
-
 (transient-define-prefix pasvortilo-menu ()
   "Custom menu to do actions in pasvoritlo."
   [["Actions"
     ("c" "Copy password" (lambda () (interactive) (pasvortilo-actions (pasvortilo-select-pass) "Copy")))
-    ("i" "Insert password" (lambda () (interactive) (pasvortilo-insert-pass (pasvortilo-select-pass))))
+    ("i" "Insert password" (lambda () (interactive) (pasvortilo-actions (pasvortilo-select-pass) "Insert"))
     
     "Exit"
      ("q" "Close menu" transient-quit-one)]])
