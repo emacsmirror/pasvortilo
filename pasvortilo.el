@@ -30,7 +30,7 @@
 (require 'transient)
 
 (defgroup pasvortilo nil
-  "Password manager using pass or gopass as backend."
+  "Password manager using 'pass' or 'gopass' as backend."
   :group 'applications
   :prefix "pasvortilo-"
   :version "1.0")
@@ -76,7 +76,7 @@ Using the optional parameters SERVICE, LENGTH SYMBOLS? is possible to define the
                         pasvortilo-password-manager
                         entry
                         len
-                        (if use-symbols "" "--symbols=false")))
+                        (if use-symbols "--symbols=true" "")))
                
                ;; pass delegates generation to pwgen internally via `pass generate`
                ((string= pasvortilo-password-manager "pass")
