@@ -32,7 +32,8 @@
 (defgroup pasvortilo nil
   "Password manager using pass or gopass as backend."
   :group 'applications
-  :prefix "pasvortilo-")
+  :prefix "pasvortilo-"
+  :version "1.0")
 
 (defcustom password-manager "pass"
   "Password manager to use between gopass and pass."
@@ -132,6 +133,10 @@ If they aren't given by user the function request it."
 "Copy a PASSWORD."
 (kill-new password)
 (message "Contraseña copiada con exito"))
+
+(defun pasvortilo-about ()
+  (interactive)
+  (message "Version %s of Pasvortilo" (get 'pasvortilo 'custom-version)))
 
 (provide 'pasvortilo)
 ;;; pasvortilo.el ends here
