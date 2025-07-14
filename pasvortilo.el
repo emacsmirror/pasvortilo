@@ -27,12 +27,13 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'transient))
+(require 'transient)
 
 (defgroup pasvortilo nil
   "Password manager using 'pass' or 'gopass' as backend."
   :group 'applications
   :prefix "pasvortilo-"
+  :link '(url-link :tag "Website" "https://codeberg.org/mester/pasvortilo")
   :version "1.0")
 
 (defcustom pasvortilo-password-manager "pass"
@@ -42,7 +43,7 @@
   :group 'pasvortilo)
 
 (defun pasvortilo-obtain-password (service)
-"Obtain the password of a SERVICE available in pass."
+"Return the password for SERVICE from the configured password manager."
 (string-trim (shell-command-to-string (format "%s show %s" pasvortilo-password-manager service))))
 
 (defun pasvortilo-insert-pass (pass)
@@ -153,12 +154,27 @@ Using the optional parameters SERVICE, LENGTH SYMBOLS? is possible to define the
    ["Exit"
     ("q" "Close menu" transient-quit-one)]])
 
+(defun pasvortilo-create-new-pass (&optional service password)
+  "Create a new 'pass' entry using the SERVICE and PASSWORD specified.
+If they aren't given by user the function request it."
+  (interactive)
+  (let* ((service (or service (read-string "Insert the service you want a password for: ")))
+         (pass (or password (read-passwd "Insert the password: ")))
+         (proc (start-process password-manager "*Pass Insert*"
+                              password-manager "insert" "-m" service)))
+    (process-send-string proc (format "%s\n" pass))
+    (process-send-eof proc)
+    (set-process-sentinel
+     proc
+     (lambda (p event)
+       (when (string= event "finished\n")
+         (message "Contraseña para %s guardada exitosamente." service))))))
+
+
 (defun pasvortilo-copy-pass (password)
 "Copy a PASSWORD."
 (kill-new password)
 (message "Contraseña copiada con exito"))
-
-
 
 (defun pasvortilo-about ()
 "Tell about pasvortilo in minibuffer."
