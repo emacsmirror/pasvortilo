@@ -29,6 +29,15 @@
 
 (require 'transient)
 
+;; Declaring functions to avoid erros becuase might not be defined at runtime
+
+(declare-function transient-define-prefix "transient" (&rest args))
+(declare-function transient-setup "transient" (&rest args))
+(declare-function transient-prefix "transient" (&rest args))
+(declare-function transient--suffix-only "transient" (&rest args))
+(declare-function transient--set-layout "transient" (&rest args))
+
+
 (defgroup pasvortilo nil
   "Password manager using 'pass' or 'gopass' as backend."
   :group 'applications
