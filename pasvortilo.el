@@ -23,7 +23,7 @@
 
 ;;; Commentary:
 
-;; Password manager using pass or gopass as backend, allow to create password copy them insert them in a buffer insert a custom password, use transient for a little interface that allow to do operations
+;; Password manager using pass or gopass
 
 ;;; Code:
 
