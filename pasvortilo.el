@@ -53,8 +53,11 @@
   :group 'pasvortilo)
 
 (defun pasvortilo-obtain-password (service)
-"Return the password for SERVICE from the configured password manager."
-(string-trim (shell-command-to-string (format "%s show %s" pasvortilo-password-manager service))))
+  "Return the password for SERVICE from the configured password manager."
+  (let* ((case-fold-search t) (pass (string-trim (shell-command-to-string (format "%s show %s" pasvortilo-password-manager service)))))
+    (if (or (string-match-p "not in the password store" pass) (string-match-p "no results" pass))
+	(error (format "Doesn't exist a password for %s" service))
+      pass)))
 
 (defun pasvortilo-insert-pass (pass)
   "Insert password in a buffer PASS is the password to insert."
@@ -140,14 +143,10 @@ these things that are needed to generate the password but if you don't put it th
 	     password-entry)))
 
 (defun pasvortilo-select-pass (&optional service)
-  "Select password entry.
-If you want to select a password of a service in Emacs Lisp I recommend use this function with optional parameter SERVICE over 'pasvortilo-obtain-password'
-because this function has a good error treatment. Unless you're sure the password entry of that you want obtain a password exists always is more recomendable thisz."
+  "Select password entry. and obtain the password from that."
   (let* ((password-entry (or service (pasvortilo-select-service))))
-    (if password-entry
-	(pasvortilo-obtain-password password-entry))
-    (error "There isn't a password of that style.")))
-
+    (when password-entry
+      (pasvortilo-obtain-password password-entry))))
 (transient-define-prefix pasvortilo-menu ()
   "Custom menu to do actions in Pasvortilo."
   [["Actions"
