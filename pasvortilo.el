@@ -60,14 +60,18 @@
       pass)))
 
 (defmacro pasvortilo-acts-with-pass (act)
+  "Macro to define a simple action as copy or insert a password that is defined as an ACT."
   (let* ((actb (if (eq act 'copy) 'kill-new act)) (mes (if (eq act 'copy) `(message "Password copied successfully") `(message "Password %sed successfully" ,(symbol-name act)))))
     `(defun ,(intern (format "pasvortilo-%s-pass" (symbol-name act))) (password)
        ,(format "%s%s the PASSWORD in an easy way that also gives feedback about completion if it works." (capitalize (symbol-name act)) (if (eq act 'insert) " in a new buffer" ""))
-       (,actb password)
-       ,mes)))
+       (if password
+	   (progn (,actb password)
+		  ,mes)
+	 (error "A nil password isn't valid.")))))
 
 (pasvortilo-acts-with-pass insert)
 (pasvortilo-acts-with-pass copy)
+
 
 (defun pasvortilo-actions (password &optional act)
   "Actions to do with PASSWORD is possible to use ACT to use an action given by parameter."
