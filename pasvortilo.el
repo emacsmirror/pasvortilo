@@ -59,18 +59,23 @@
 	(error (format "Doesn't exist a password for %s" service))
       pass)))
 
-(defun pasvortilo-insert-pass (pass)
-  "Insert password in a buffer PASS is the password to insert."
-  (insert pass)
-  (message "Password inserted successfully"))
+(defmacro pasvortilo-acts-with-pass (act)
+  (let* ((actb (if (eq act 'copy) 'kill-new act)) (mes (if (eq act 'copy) `(message "Password copied successfully") `(message "Password %sed successfully" ,(symbol-name act)))))
+    `(defun ,(intern (format "pasvortilo-%s-pass" (symbol-name act))) (password)
+       ,(format "%s%s the PASSWORD in an easy way that also gives feedback about completion if it works." (capitalize (symbol-name act)) (if (eq act 'insert) " in a new buffer" ""))
+       (,actb password)
+       ,mes)))
+
+(pasvortilo-acts-with-pass insert)
+(pasvortilo-acts-with-pass copy)
 
 (defun pasvortilo-actions (password &optional act)
   "Actions to do with PASSWORD is possible to use ACT to use an action given by parameter."
   (let ((action (or act (completing-read "Accion: " '("Copy" "Insert")))))
-  (pcase action
-    ("Copy" (pasvortilo-copy-pass password))
-    ("Insert" (pasvortilo-insert-pass password))
-    ("Create" (pasvortilo-create-new-pass password)))))
+    (pcase action
+      ("Copy" (pasvortilo-copy-pass password))
+      ("Insert" (pasvortilo-insert-pass password))
+      ("Create" (pasvortilo-create-new-pass password)))))
 
 (defun pasvortilo-generate-pass (&optional service length symbols?)
   "Generate and store a password using 'pass' or 'gopass' directly.
@@ -147,6 +152,7 @@ these things that are needed to generate the password but if you don't put it th
   (let* ((password-entry (or service (pasvortilo-select-service))))
     (when password-entry
       (pasvortilo-obtain-password password-entry))))
+
 (transient-define-prefix pasvortilo-menu ()
   "Custom menu to do actions in Pasvortilo."
   [["Actions"
@@ -184,13 +190,9 @@ If they aren't given by user the function request it."
          (message "Contraseña para %s guardada exitosamente." service))))))
 
 
-(defun pasvortilo-copy-pass (password)
-"Copy a PASSWORD."
-(kill-new password)
-(message "Contraseña copiada con exito"))
 
 (defun pasvortilo-about ()
-"Tell about pasvortilo in minibuffer."
+  "Tell about pasvortilo in minibuffer."
   (interactive)
   (message "Version %s of Pasvortilo" (get 'pasvortilo 'custom-version)))
 
