@@ -82,7 +82,7 @@
       ("Create" (pasvortilo-create-new-pass password)))))
 
 (defun pasvortilo-generate-pass (&optional service length symbols?)
-  "Generate and store a password using \'pass' or \'gopass\=' directly.
+  "Generate and store a password using \'pass' or \'gopass' directly.
 Using the optional parameters SERVICE, LENGTH SYMBOLS? is possible to define data without ask"
   (interactive)
   (let* ((entry (or service
