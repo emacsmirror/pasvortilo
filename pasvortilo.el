@@ -40,7 +40,7 @@
 
 
 (defgroup pasvortilo nil
-  "Password manager using 'pass' or 'gopass' as backend."
+  "Password manager using \'pass' or \'gopass' as backend."
   :group 'applications
   :prefix "pasvortilo-"
   :link '(url-link :tag "Website" "https://codeberg.org/mester/pasvortilo")
@@ -82,7 +82,7 @@
       ("Create" (pasvortilo-create-new-pass password)))))
 
 (defun pasvortilo-generate-pass (&optional service length symbols?)
-  "Generate and store a password using 'pass' or 'gopass' directly.
+  "Generate and store a password using \'pass' or \'gopass\=' directly.
 Using the optional parameters SERVICE, LENGTH SYMBOLS? is possible to define data without ask"
   (interactive)
   (let* ((entry (or service
@@ -93,7 +93,7 @@ Using the optional parameters SERVICE, LENGTH SYMBOLS? is possible to define dat
                           (y-or-n-p "Include special symbols? ")
                         symbols?))
          (cmd (cond
-               ;; gopass has a native 'generate' command
+               ;; gopass has a native 'generate=' command
                ((string= pasvortilo-password-manager "gopass")
                 (format "%s generate -f %s %d %s"
                         pasvortilo-password-manager
@@ -127,7 +127,7 @@ Using the optional parameters SERVICE, LENGTH SYMBOLS? is possible to define dat
           (message "Password for %s deleted." serv))
       (message "Deletion canceled."))))
 (defun pasvortilo-clean-entries (entries)
-  "Return a list of ENTRIES for 'pass' or 'gopass' password manager in a format that works in Emacs."
+  "Return a list of ENTRIES for \'pass' or \'gopass' password manager in a format that works in Emacs."
   (let* ((lines (split-string entries "\n" t))
          (path-stack '())
          (entries '()))
@@ -178,7 +178,7 @@ Obtain the password from that.if you execute from another context of waited you 
     ("q" "Close menu" transient-quit-one)]])
 
 (defun pasvortilo-create-new-pass (&optional service password)
-  "Create a new 'pass' entry using the SERVICE and PASSWORD specified.
+  "Create a new password entry using the SERVICE and PASSWORD specified.
 If they aren't given by user the function request it."
   (interactive)
   (let* ((service (or service (read-string "Insert the service you want a password for: ")))
