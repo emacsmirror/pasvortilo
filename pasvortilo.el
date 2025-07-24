@@ -56,7 +56,7 @@
   "Return the password for SERVICE from the configured password manager."
   (let* ((case-fold-search t) (pass (string-trim (shell-command-to-string (format "%s show %s" pasvortilo-password-manager service)))))
     (if (or (string-match-p "not in the password store" pass) (string-match-p "no results" pass))
-	(error (format "Doesn't exist a password for %s" service))
+	(error "Doesn't exist a password for %s" service)
       pass)))
 
 (defmacro pasvortilo-acts-with-pass (act)
@@ -67,7 +67,7 @@
        (if password
 	   (progn (,actb password)
 		  ,mes)
-	 (error "A nil password isn't valid.")))))
+	 (error "A nil password isn't valid")))))
 
 (pasvortilo-acts-with-pass insert)
 (pasvortilo-acts-with-pass copy)
@@ -148,11 +148,12 @@ these things that are needed to generate the password but if you don't put it th
   "Select the service of a password."
   (let* ((password-entries (pasvortilo-clean-entries (ansi-color-filter-apply (shell-command-to-string (format "%s ls" pasvortilo-password-manager)))))
 	 (password-entry (string-trim (completing-read "Password entry: " password-entries nil t))))
-	 (when password-entry
-	     password-entry)))
+    (when password-entry
+      password-entry)))
 
 (defun pasvortilo-select-pass (&optional service)
-  "Select password entry. and obtain the password from that. if you execute from another context of waited you can use SERVICE to define the service"
+  "Select password entry.
+Obtain the password from that.if you execute from another context of waited you can use SERVICE to define the service."
   (let* ((password-entry (or service (pasvortilo-select-service))))
     (when password-entry
       (pasvortilo-obtain-password password-entry))))
@@ -183,8 +184,8 @@ If they aren't given by user the function request it."
   (interactive)
   (let* ((service (or service (read-string "Insert the service you want a password for: ")))
          (pass (or password (read-passwd "Insert the password: ")))
-         (proc (start-process password-manager "*Pass Insert*"
-                              password-manager "insert" "-m" service)))
+         (proc (start-process pasvortilo-password-manager "*Pass Insert*"
+                              pasvortilo-password-manager "insert" "-m" service)))
     (process-send-string proc (format "%s\n" pass))
     (process-send-eof proc)
     (set-process-sentinel
