@@ -44,7 +44,7 @@
   :group 'applications
   :prefix "pasvortilo-"
   :link '(url-link :tag "Website" "https://codeberg.org/mester/pasvortilo")
-  :version "1.0")'
+  :version "1.0")
 
 (defcustom pasvortilo-password-manager "pass"
   "Password manager to use between `gopass' and `pass'."
