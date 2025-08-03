@@ -74,7 +74,8 @@ An action that is defined as an ACT."
 (pasvortilo-acts-with-pass copy)
 
 (defun pasvortilo-actions (password &optional act)
-  "Actions to do with PASSWORD is possible to use ACT to use an action given by parameter."
+  "Actions to do with PASSWORD.
+It's possible to use ACT to use an action given by parameter."
   (let ((action (or act (completing-read "Accion: " '("Copy" "Insert")))))
     (pcase action
       ("Copy" (pasvortilo-copy-pass password))
