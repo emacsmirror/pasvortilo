@@ -1,3 +1,4 @@
+[[https://melpa.org/#/pasvortilo][file:https://melpa.org/packages/pasvortilo-badge.svg]]
 * Pasvortilo: Emacs password management
 This is a password manager for Emacs that uses ~pass~ or ~gopass~ as back-end allow to create new password entries, remove existing entries, also you can obtain existing passwords and copy or insert them.
 
@@ -11,6 +12,7 @@ If you like this little package please give me any suggestion, you have using an
 
 * Notes
 The name pasvortilo comes from Esperanto where pasvorto is the word for password and -ilo is used to talk about tools
+Now available in [[https://melpa.org/#/pasvortilo][MELPA]]
 
 # Local Variables:
 # jinx-languages: "en_US"
