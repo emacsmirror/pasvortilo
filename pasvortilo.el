@@ -60,15 +60,26 @@
       pass)))
 
 (defmacro pasvortilo-acts-with-pass (act)
-  "Macro to define a simple action.
-An action that is defined as an ACT."
-  (let* ((actb (if (eq act 'copy) 'kill-new act)) (mes (if (eq act 'copy) `(message "Password copied successfully") `(message "Password %sed successfully" ,(symbol-name act)))))
+  "Macro to define a simple password action."
+  (let* ((actb (if (eq act 'copy)
+                   ;; correct clipboard mechanism for daemon mode
+                   '(with-selected-frame (selected-frame)
+                      (gui-set-selection 'CLIPBOARD password)
+                      (gui-set-selection 'PRIMARY password))
+                 act))
+         (mes (if (eq act 'copy)
+                  `(message "Password copied successfully")
+                `(message "Password %sed successfully" ,(symbol-name act)))))
+
     `(defun ,(intern (format "pasvortilo-%s-pass" (symbol-name act))) (password)
-       ,(format "%s%s the PASSWORD in an easy way giving feedback." (capitalize (symbol-name act)) (if (eq act 'insert) " in a new buffer" ""))
+       ,(format "%s%s the PASSWORD in an easy way giving feedback."
+                (capitalize (symbol-name act))
+                (if (eq act 'insert) " in a new buffer" ""))
        (if password
-	   (progn (,actb password)
-		  ,mes)
-	 (error "A nil password isn't valid")))))
+           (progn
+             ,actb
+             ,mes)
+         (error "A nil password isn't valid")))))
 
 (pasvortilo-acts-with-pass insert)
 (pasvortilo-acts-with-pass copy)
@@ -180,20 +191,19 @@ Only if you have selected a SERVICE."
     ("q" "Close menu" transient-quit-one)]])
 
 (defun pasvortilo-create-new-pass (&optional service password)
-  "Create a new password entry using the SERVICE and PASSWORD specified.
-If they aren't given by user the function request them."
+  "Create a new password entry using pass or gopass."
   (interactive)
-  (let* ((service (or service (read-string "Insert the service you want a password for: ")))
-         (pass (or password (read-passwd "Insert the password: ")))
-         (proc (start-process pasvortilo-password-manager "*Pass Insert*"
-                              pasvortilo-password-manager "insert" "-m" service)))
-    (process-send-string proc (format "%s\n" pass))
-    (process-send-eof proc)
-    (set-process-sentinel
-     proc
-     (lambda (_ event)
-       (when (string= event "finished\n")
-         (message "Contraseña para %s guardada exitosamente." service))))))
+  (let* ((service (or service (read-string "Service name: ")))
+         (pass (or password (read-passwd "Password: ")))
+         (mgr pasvortilo-password-manager))
+
+    ;; run pass/gopass synchronously with stdin password
+    (with-temp-buffer
+      (call-process-region
+       pass nil mgr nil nil nil "insert" "-m" service))
+
+    (message "Password for \"%s\" saved successfully." service)))
+
 
 (defun pasvortilo-about ()
   "Tell about pasvortilo in minibuffer."
